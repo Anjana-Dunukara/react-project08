@@ -5,6 +5,10 @@ const SimpleInput = (props) => {
     return name.trim() !== "";
   };
 
+  const validateEmail = (email) => {
+    return email.includes("@");
+  };
+
   const {
     value,
     hasError,
@@ -14,9 +18,18 @@ const SimpleInput = (props) => {
     reset,
   } = useInput(validateName);
 
+  const {
+    value: emailValue,
+    hasError: emailHasError,
+    inputIsValid: emailIsValid,
+    valueChangeHandler: emailChangeHandler,
+    inputBlurHandler: emailBlurHandler,
+    reset: emailReset,
+  } = useInput(validateEmail);
+
   let formIsValid = false;
 
-  if (inputIsValid) {
+  if (inputIsValid && emailIsValid) {
     formIsValid = true;
   }
 
@@ -28,10 +41,13 @@ const SimpleInput = (props) => {
     }
 
     console.log(value);
+    console.log(emailValue);
     reset();
+    emailReset();
   };
 
   const inputStyles = hasError ? "form-control invalid" : "form-control";
+  const emailStyles = emailHasError ? "form-control invalid" : "form-control";
 
   return (
     <form onSubmit={onSubmitHandler}>
@@ -45,6 +61,19 @@ const SimpleInput = (props) => {
           value={value}
         />
         {hasError && <p className="error-text">Input must not be empty!!!</p>}
+      </div>
+      <div className={emailStyles}>
+        <label htmlFor="email">Your Email</label>
+        <input
+          onChange={emailChangeHandler}
+          type="text"
+          id="name"
+          onBlur={emailBlurHandler}
+          value={emailValue}
+        />
+        {emailHasError && (
+          <p className="error-text">Input must be a Valid Email!!!</p>
+        )}
       </div>
       <div className="form-actions">
         <button disabled={!formIsValid}>Submit</button>
