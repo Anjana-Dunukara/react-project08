@@ -1,10 +1,11 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 const SimpleInput = (props) => {
   const [enteredName, setEnteredName] = useState("");
-  const [inputIsValid, setInputISValid] = useState(false);
   const [inputFieldTouched, setInputFieldTouched] = useState(false);
-  const inputRef = useRef();
+
+  const inputIsValid = enteredName.trim() !== "";
+  const inputDataInvalid = !inputIsValid && inputFieldTouched;
 
   const setinputChangeHandler = (event) => {
     setEnteredName(event.target.value);
@@ -19,18 +20,14 @@ const SimpleInput = (props) => {
 
     setInputFieldTouched(true);
 
-    if (enteredName.trim() === "") {
-      setInputISValid(false);
+    if (!inputIsValid) {
       return;
     }
 
-    setInputISValid(true);
-    console.log(inputRef.current.value);
     console.log(enteredName);
     setEnteredName("");
+    setInputFieldTouched(false);
   };
-
-  const inputDataInvalid = !inputIsValid && inputFieldTouched;
 
   const inputStyles = inputDataInvalid
     ? "form-control invalid"
@@ -41,7 +38,6 @@ const SimpleInput = (props) => {
       <div className={inputStyles}>
         <label htmlFor="name">Your Name</label>
         <input
-          ref={inputRef}
           onChange={setinputChangeHandler}
           type="text"
           id="name"
